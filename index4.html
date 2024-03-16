@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <dialog>
+        <button autofocus>Close</button>
+    
+    <h1>Formulaire</h1>
+
+    <form id="monForm">
+        <label for="titre">Titre :</label><br>
+        <input type="text" id="titre" name="titre"><br>
+
+        <label for="categories">Categories :</label><br>
+        <input type="text" id="categories" name="categories"><br>
+
+        <label for="description">Description: </label><br>
+        <select id="description" name="description">
+            <option disabled selected></option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Soumettre">
+    </form>
+    
+    
+
+</dialog>
+
+<button><div class="container">
+    <div class="card president">
+      <div class="card-header">
+        <div class="card-header-text">FAIRE</div>
+        <img class="card-header-img" src="barbie.jpg" alt="" />
+      </div>
+      <div class="card-content">
+        <div class="sub-card">
+            <div id="results"></div>
+        </div>
+        <div class="sub-card add">+</div>
+      </div>
+    </div>
+
+
+</button>
+
+
+
+
+    <script>
+        let submittedData = JSON.parse(localStorage.getItem('submittedData')) || [];
+        document.getElementById('monForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            let formData = new FormData(event.target);
+            let data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            const descriptionSelect = document.getElementById('description');
+            const selectedOption = descriptionSelect.options[descriptionSelect.selectedIndex].text;
+            data['description'] = selectedOption;
+
+            submittedData.push(data);
+            localStorage.setItem('submittedData', JSON.stringify(submittedData));
+
+            updateResults();
+        });
+
+        function updateResults() {
+            let resultDiv = document.getElementById('results');
+            resultDiv.innerHTML = '';
+            submittedData.forEach((data, index) => {
+                let resultParagraph = document.createElement('div');
+                resultParagraph.classList.add('result');
+                resultParagraph.innerHTML = `
+                    <p><strong>Tache ${index + 1}:</strong></p>
+                    <p>Titre: ${data.titre}</p>
+                    <p>Categories: ${data.categories}</p>
+                    <p>Description: ${data.description}</p>
+                    <button class="delete-button" onclick="deleteResult(${index})">Supprimer</button>
+                `;
+                resultDiv.appendChild(resultParagraph);
+                monForm.reset();
+            });
+        }
+
+
+        function deleteResult(index) {
+            submittedData.splice(index, 1);
+            localStorage.setItem('submittedData', JSON.stringify(submittedData));
+            updateResults();
+        }
+
+        updateResults();
+       
+        const dialog = document.querySelector("dialog");
+const showButton = document.querySelector("dialog + button");
+const closeButton = document.querySelector("dialog button");
+
+showButton.addEventListener("click", () => {
+  dialog.showModal();
+});
+
+closeButton.addEventListener("click", () => {
+  dialog.close();
+});
+    </script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
